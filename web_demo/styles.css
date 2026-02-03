@@ -1,0 +1,601 @@
+/* ===== CSS Variables ===== */
+:root {
+    --bg-primary: #0a0a1a;
+    --bg-secondary: #12122a;
+    --bg-tertiary: #1a1a3a;
+    --accent-primary: #4a9eff;
+    --accent-secondary: #7b5cff;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0c0;
+    --border-color: #2a2a4a;
+    --success: #4caf50;
+    --danger: #f44336;
+    --warning: #ff9800;
+
+    /* Faction Colors */
+    --faction-player: #4a9eff;
+    --faction-1: #ff4a4a;
+    --faction-2: #4aff7a;
+    --faction-3: #ffcc4a;
+    --faction-4: #aa4aff;
+    --faction-5: #ff7a4a;
+    --neutral: #606080;
+}
+
+/* ===== Reset & Base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ===== Game Container ===== */
+.game-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Header ===== */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: var(--bg-tertiary);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.game-header h1 {
+    font-size: 1.8rem;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.game-info {
+    display: flex;
+    gap: 25px;
+}
+
+.game-info span {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    padding: 8px 15px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+}
+
+/* ===== Main Layout ===== */
+.game-main {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    flex: 1;
+}
+
+/* ===== Map Container ===== */
+.map-container {
+    background: var(--bg-tertiary);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+#map-svg {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+}
+
+/* Territory Styles */
+.territory {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    stroke: rgba(255, 255, 255, 0.3);
+    stroke-width: 1;
+}
+
+.territory:hover {
+    filter: brightness(1.2);
+    stroke: white;
+    stroke-width: 2;
+}
+
+.territory.selected {
+    stroke: white;
+    stroke-width: 3;
+    filter: brightness(1.3);
+    animation: pulse 1s infinite;
+}
+
+.territory.targetable {
+    stroke: var(--danger);
+    stroke-width: 2;
+    stroke-dasharray: 5, 3;
+    animation: targetPulse 0.8s infinite;
+}
+
+.territory.friendly {
+    stroke: var(--success);
+    stroke-width: 2;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        filter: brightness(1.3);
+    }
+
+    50% {
+        filter: brightness(1.5);
+    }
+}
+
+@keyframes targetPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Territory Labels */
+.territory-label {
+    font-size: 10px;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.territory-points {
+    font-size: 14px;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+/* Attack Animation */
+.attack-line {
+    stroke: var(--danger);
+    stroke-width: 3;
+    stroke-linecap: round;
+    fill: none;
+    animation: attackMove 0.5s ease-out;
+}
+
+@keyframes attackMove {
+    from {
+        stroke-dashoffset: 100;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.attack-explosion {
+    animation: explode 0.5s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        r: 5;
+        opacity: 1;
+    }
+
+    100% {
+        r: 30;
+        opacity: 0;
+    }
+}
+
+/* Reinforcement Animation */
+.reinforce-line {
+    stroke-linecap: round;
+    fill: none;
+    animation: reinforceMove 0.4s ease-out;
+}
+
+@keyframes reinforceMove {
+    from {
+        stroke-dashoffset: 50;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.reinforce-arrival {
+    animation: reinforceArrive 0.4s ease-out forwards;
+}
+
+@keyframes reinforceArrive {
+    0% {
+        r: 5;
+        opacity: 1;
+    }
+
+    100% {
+        r: 20;
+        opacity: 0;
+    }
+}
+
+/* ===== Side Panel ===== */
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.panel-section {
+    background: var(--bg-tertiary);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.panel-section h3 {
+    font-size: 0.95rem;
+    color: var(--accent-primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Faction Status */
+#faction-status {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.faction-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.faction-item.eliminated {
+    opacity: 0.4;
+    text-decoration: line-through;
+}
+
+.faction-item.player {
+    border: 1px solid var(--accent-primary);
+}
+
+.faction-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.faction-name {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.faction-territories {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Selected Territory Info */
+#selected-info {
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+#selected-info .territory-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#selected-info .territory-details {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Attack Controls */
+.attack-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attack-controls label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+#attack-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#attack-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#attack-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+#attack-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--accent-primary);
+}
+
+/* Buttons */
+.btn-attack {
+    padding: 12px;
+    background: linear-gradient(135deg, var(--danger), #ff6b6b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-attack:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+}
+
+.btn-cancel {
+    padding: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: var(--bg-primary);
+}
+
+.btn-control {
+    flex: 1;
+    padding: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.btn-control:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.btn-control.active {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+}
+
+.control-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* Faction Selector */
+.faction-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.faction-selector label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.faction-selector select {
+    flex: 1;
+    padding: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Game Log */
+.game-log {
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.game-log::-webkit-scrollbar {
+    width: 6px;
+}
+
+.game-log::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.log-entry.attack {
+    color: var(--danger);
+}
+
+.log-entry.conquest {
+    color: var(--warning);
+}
+
+.log-entry.elimination {
+    color: var(--accent-secondary);
+}
+
+.log-entry.reinforce {
+    color: var(--faction-2);
+}
+
+/* ===== Modal ===== */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-tertiary);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 0 50px rgba(74, 158, 255, 0.3);
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #ffd700, #ffaa00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-content p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    padding: 15px 40px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4);
+}
+
+/* ===== Instructions ===== */
+.instructions {
+    text-align: center;
+    padding: 15px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    .game-main {
+        grid-template-columns: 1fr;
+    }
+
+    .side-panel {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .panel-section {
+        flex: 1;
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 600px) {
+    .game-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .game-header h1 {
+        font-size: 1.4rem;
+    }
+}
